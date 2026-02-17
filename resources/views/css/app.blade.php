@@ -74,4 +74,86 @@ th, td {
 .icon-btn:hover { opacity:1; }
 
 tr:hover { background:#f8f9fa; }
+
+/* New */
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 24px;
+    background: #ffffff;
+    border-bottom: 1px solid #e0e0e0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+}
+
+.logo {
+    font-size: 22px;
+}
+
+.app-name {
+    font-size: 18px;
+    font-weight: 500;
+    color: #202124;
+    white-space: nowrap;
+}
+
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    color: #5f6368;
+    overflow: hidden;
+}
+
+.breadcrumb a {
+    color: #1a73e8;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+}
+
+.search-box input {
+    width: 260px;
+    padding: 8px 14px;
+    border-radius: 24px;
+    border: 1px solid #dadce0;
+    background: #f1f3f4;
+    font-size: 14px;
+    outline: none;
+}
+
+.search-box input:focus {
+    background: #ffffff;
+    border-color: #1a73e8;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .breadcrumb {
+        display: none;
+    }
+
+    .search-box input {
+        width: 180px;
+    }
+}
+
 </style>

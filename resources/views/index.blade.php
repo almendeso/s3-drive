@@ -5,11 +5,13 @@
 <title>S3-Drive</title>
 </head>
 
-@include('css')
+@include('css.app')
 
 <body>
 
-<h2>📁 {{ $path ?: '/' }}</h2>
+@include('layouts.app')
+
+<br/>
 
 <div class="toolbar">
 
