@@ -60,9 +60,30 @@ class FileManagerController extends Controller
             return redirect()->route('files.index', compact('path'));
         }
 
-        $items = collect(File::files($currentDir))
-            ->merge(File::directories($currentDir))
-            ->sortBy(fn($i) => basename($i));
+$sort = $request->get('sort', 'name');
+$dir  = $request->get('dir', 'asc');
+
+$items = collect(File::files($currentDir))
+    ->merge(File::directories($currentDir))
+    ->map(function ($item) {
+        return [
+            'name'     => basename($item),
+            'path'     => $item,
+            'is_dir'   => is_dir($item),
+            'size'     => is_dir($item) ? 0 : filesize($item),
+            'modified' => filemtime($item),
+        ];
+    })
+    ->sortBy(function ($item) use ($sort) {
+        return match ($sort) {
+            'size'     => $item['size'],
+            'modified' => $item['modified'],
+            default    => strtolower($item['name']),
+        };
+    })
+    ->sortByDesc(fn ($item) => $item['is_dir']) // 📁 pastas primeiro
+    ->when($dir === 'desc', fn ($c) => $c->reverse())
+    ->values();         
 
         return view('index', [
             'items'     => $items,
