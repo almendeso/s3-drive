@@ -113,19 +113,29 @@
         $relative = ltrim(($path ? $path.'/' : '').$name,'/');
         $cdn = $cdnBase.'/'.rawurlencode($relative);
         $cdn = str_replace('%2F','/',$cdn);
+
+        $localUrl = route('files.local', [
+            'path' => $relative
+        ]);        
     @endphp
     <td>📄 {{ $name }}</td>
     <td>{{ number_format($item['size']/1024,2) }} KB</td>
     <td>{{ $date }}</td>
     <td>
-        <a href="{{ $cdn }}" target="_blank">🌐</a>
+        <a href="{{ $cdn }}" target="_blank" title="Abrir CDN">🌐</a>
+        <a href="{{ $localUrl }}" target="_blank" title="Abrir Local">🖥️</a>        
         <span onclick="copyLink('{{ $cdn }}')">📋</span>
         <form method="post" action="{{ route('files.delete') }}" style="display:inline">
             @csrf
             @method('DELETE')
             <input type="hidden" name="path" value="{{ $path }}">
             <input type="hidden" name="file" value="{{ $name }}">
-            <button onclick="return confirm('Excluir arquivo?')">🗑️</button>
+            <button type="submit"
+                    style="background:none;border:none;padding:0;cursor:pointer;font-size:16px"
+                    onclick="return confirm('Excluir arquivo?')"
+                    title="Excluir">
+                🗑️
+            </button>
         </form>
     </td>
 @endif

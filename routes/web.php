@@ -18,5 +18,8 @@ use App\Http\Controllers\FileManagerController;
 Route::match(['get','post'], '/', [FileManagerController::class, 'index'])
     ->name('files.index');
 
+Route::get('/files/local', [FileManagerController::class, 'local'])
+    ->name('files.local');
+    
 Route::delete('/delete', [FileManagerController::class, 'delete'])
     ->name('files.delete');

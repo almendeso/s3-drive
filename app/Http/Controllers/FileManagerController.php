@@ -93,6 +93,23 @@ class FileManagerController extends Controller
         ]);
     }
 
+    public function local(Request $request)
+    {
+        $path = $request->get('path');
+
+        if (!$path) {
+            abort(404);
+        }
+
+        $fullPath = realpath($this->baseDir.'/'.$path);
+
+        if (!$fullPath || !Str::startsWith($fullPath, $this->baseDir) || !is_file($fullPath)) {
+            abort(403);
+        }
+
+        return response()->file($fullPath);
+    }
+    
     public function delete(Request $request)
     {
         $path = $request->path ?? '';
