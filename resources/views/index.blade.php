@@ -10,6 +10,7 @@
 <body>
 
 @include('layouts.app')
+@include('layouts.toast')
 
 <br/>
 
@@ -123,18 +124,30 @@
     <td>{{ $date }}</td>
     <td>
         <a href="{{ $cdn }}" target="_blank" title="Abrir CDN">🌐</a>
-        <a href="{{ $localUrl }}" target="_blank" title="Abrir Local">🖥️</a>        
-        <span onclick="copyLink('{{ $cdn }}')">📋</span>
+        <a href="{{ $localUrl }}" target="_blank" title="Abrir Local">🖥️</a>     
+
+        <span onclick="copyLink('{{ $cdn }}')" title="Copiar link CDN"
+            style="cursor:pointer">
+            📋
+        </span>
+
+        <button onclick="invalidateCDN('{{ $path }}','{{ $name }}',this)"
+            style="background:none;border:none;padding:0;cursor:pointer;font-size:16px"
+            title="Invalidar CDN">
+            ♻️
+        </button>        
+                
         <form method="post" action="{{ route('files.delete') }}" style="display:inline">
             @csrf
             @method('DELETE')
             <input type="hidden" name="path" value="{{ $path }}">
             <input type="hidden" name="file" value="{{ $name }}">
+
             <button type="submit"
-                    style="background:none;border:none;padding:0;cursor:pointer;font-size:16px"
-                    onclick="return confirm('Excluir arquivo?')"
-                    title="Excluir">
-                🗑️
+                style="background:none;border:none;padding:0;cursor:pointer;font-size:18px;line-height:1;color:#000"
+                onclick="return confirm('Excluir arquivo?')"
+                title="Excluir">
+                🗑
             </button>
         </form>
     </td>
@@ -144,6 +157,8 @@
 
 </tbody>
 </table>
+
+@include('invalidateCDN')
 
 <script>
 function copyLink(link) {

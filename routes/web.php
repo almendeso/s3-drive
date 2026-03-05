@@ -21,5 +21,11 @@ Route::match(['get','post'], '/', [FileManagerController::class, 'index'])
 Route::get('/files/local', [FileManagerController::class, 'local'])
     ->name('files.local');
     
+Route::post('/files/invalidate', [FileManagerController::class, 'invalidate'])
+    ->name('files.invalidate');
+
+Route::post('/files/invalidate-folder', [FileManagerController::class, 'invalidateFolder'])
+    ->name('files.invalidateFolder');
+        
 Route::delete('/delete', [FileManagerController::class, 'delete'])
     ->name('files.delete');

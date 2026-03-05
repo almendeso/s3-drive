@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
+use App\Services\CloudFrontService;
 
 class FileManagerController extends Controller
 {
@@ -38,6 +40,10 @@ class FileManagerController extends Controller
 
         /* UPLOAD */
         if ($request->hasFile('files')) {
+
+            $paths = [];
+            $cloudfront = app(CloudFrontService::class);
+
             foreach ($request->file('files') as $file) {
                 $name = preg_replace('/[^a-zA-Z0-9._-]/', '_', $file->getClientOriginalName());
 
@@ -55,11 +61,28 @@ class FileManagerController extends Controller
                 }
 
                 $file->move(dirname($target), basename($target));
+
+                $prefixes = [
+                    '/usr/local/s3-sites/html/storage/app/uploads',
+                    '/var/www/html/s3-drive/storage/app/uploads'
+                ];
+
+                $relative = str_replace($prefixes, '', $target);
+
+                $relative = '/'.ltrim($relative,'/');
+                $relative = preg_replace('#/+#','/',$relative);
+
+                $paths[] = $relative;
+            }
+
+            if ($paths) {
+                logger('CloudFront invalidation', $paths);
+                $cloudfront->invalidate($paths);
             }
 
             return redirect()->route('files.index', compact('path'));
-        }
-
+        }                     
+        
         $sort = $request->get('sort', 'name');
         $dir  = $request->get('dir', 'asc');
 
@@ -109,7 +132,53 @@ class FileManagerController extends Controller
 
         return response()->file($fullPath);
     }
+
+    public function invalidate(Request $request)
+    {
+        $path = $request->input('path');
+        $file = $request->input('file');
+
+        $currentDir = realpath($this->baseDir.'/'.$path);
+        $target = realpath($currentDir.'/'.$file);
+
+        if (!$target || !Str::startsWith($target, $this->baseDir)) {
+            return response()->json(['error' => 'Invalid path'], 403);
+        }
+
+        $prefixes = [
+            '/usr/local/s3-sites/html/storage/app/uploads',
+            '/var/www/html/s3-drive/storage/app/uploads'
+        ];
+
+        $relative = str_replace($prefixes, '', $target);
+        $relative = '/'.ltrim($relative,'/');
+        $relative = preg_replace('#/+#','/',$relative);
+
+        app(CloudFrontService::class)->invalidate($relative);
+
+        return response()->json([
+            'status' => 'ok',
+            'file'   => $relative
+        ]);
+    }    
     
+    public function invalidateFolder(Request $request)
+    {
+        $path = $request->input('path') ?? '';
+
+        $relative = '/'.trim($path,'/').'/*';
+        $relative = preg_replace('#/+#','/',$relative);
+
+        logger('CloudFront invalidation folder', [$relative]);
+
+        app(CloudFrontService::class)->invalidate($relative);
+
+        return response()->json([
+            'status' => 'ok',
+            'folder' => $relative
+        ]);
+    }
+
     public function delete(Request $request)
     {
         $path = $request->path ?? '';
@@ -119,7 +188,21 @@ class FileManagerController extends Controller
         $target = realpath($currentDir.'/'.$file);
 
         if ($target && Str::startsWith($target, $this->baseDir) && is_file($target)) {
+
+            $prefixes = [
+                '/usr/local/s3-sites/html/storage/app/uploads',
+                '/var/www/html/s3-drive/storage/app/uploads'
+            ];
+
+            $relative = str_replace($prefixes, '', $target);
+            $relative = '/'.ltrim($relative,'/');
+            $relative = preg_replace('#/+#','/',$relative);
+
             unlink($target);
+
+            logger('CloudFront invalidation delete', [$relative]);
+
+            app(CloudFrontService::class)->invalidate($relative);
         }
 
         return redirect()->route('files.index', compact('path'));

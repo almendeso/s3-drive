@@ -18,6 +18,12 @@
                 <span>/</span>
             @endforeach
         </nav>
+
+        <button onclick="invalidateFolder('{{ $path }}',this)"
+            style="background:none;border:none;cursor:pointer;font-size:16px"
+            title="Invalidar cache da pasta">
+            🔄
+        </button>
     </div>
 
     <div class="header-right">
