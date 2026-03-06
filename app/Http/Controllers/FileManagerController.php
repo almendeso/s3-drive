@@ -54,16 +54,17 @@ class FileManagerController extends Controller
         $path = trim($request->input('path',''),'/');
         $folder = preg_replace('/[^a-zA-Z0-9._-]/','_',$request->input('newfolder'));
 
-        if(!$folder) {
+        if(!$folder){
             return back();
         }
 
         $dir = $path ? $path.'/'.$folder : $folder;
 
-        Storage::disk('s3')->makeDirectory($dir);
+        // No S3 não precisamos criar pasta física
+        // Apenas redirecionamos para o prefixo
 
-        return redirect()->route('files.index',['path'=>$path]);
-    }
+        return redirect()->route('files.index', ['path' => $dir]);
+    }        
 
     public function local(Request $request)
     {
