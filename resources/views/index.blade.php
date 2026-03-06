@@ -7,6 +7,7 @@
 </head>
 
 @include('css.app')
+@include('css.dragdrop')
 
 <body>
 
@@ -34,7 +35,7 @@
         <form id="uploadForm" method="post" action="{{ route('files.upload') }}" enctype="multipart/form-data">
             @csrf
             <input type="hidden" name="path" value="{{ $path }}">
-            <input type="file" name="files[]" multiple required>
+            <input type="file" id="fileInput" name="files[]" multiple required>
             <button>Upload</button>
         </form>
 
@@ -194,7 +195,14 @@
 
     </table>
 
+    <div id="dropOverlay">
+    <div class="dropBox">
+        Solte os arquivos aqui
+    </div>
+    </div>
+
     @include('js.copyLink')
+    @include('js.dragdrop')
     @include('js.invalidateCDN')
     @include('js.upload')
 
