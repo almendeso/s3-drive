@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\FileManagerController;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,7 +22,6 @@ Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::middleware(['auth'])->group(function () {
-
     Route::get('/', [FileManagerController::class, 'index'])
         ->name('files.index');
 
@@ -33,9 +33,6 @@ Route::middleware(['auth'])->group(function () {
 
     Route::delete('/delete', [FileManagerController::class, 'delete'])
         ->name('files.delete');
-
-    Route::delete('/folder', [FileManagerController::class, 'deleteFolder'])
-        ->name('files.deleteFolder');
 
     Route::post('/folder/info', [FileManagerController::class, 'folderInfo'])
         ->name('files.folderInfo');        
@@ -49,4 +46,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/files/local', [FileManagerController::class, 'local'])
         ->name('files.local');
 });
+
+Route::middleware(['auth', 'role:admin'])->group(function () {
+        Route::delete('/folder', [FileManagerController::class, 'deleteFolder'])->name('files.deleteFolder');
+});
+
+
 
