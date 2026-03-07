@@ -1,13 +1,6 @@
-<!DOCTYPE html>
-<html lang="pt-br">
+@extends('layouts.base')
 
-<head>
-    <meta charset="utf-8">
-    <title>S3-Drive</title>
-</head>
-
-@include('css.app')
-@include('css.dragdrop')
+@section('content')
 
 <body>
 
@@ -116,20 +109,30 @@
                 <tr>
 
                     @if ($item['is_dir'])
-                        @php
-                            $newPath = trim($path . '/' . $name, '/');
-                        @endphp
+
+                        @php $newPath = trim($path.'/'.$name,'/'); @endphp
 
                         <td>
-                            📁
-                            <a href="{{ route('files.index', ['path' => $newPath]) }}">
-                                {{ $name }}
-                            </a>
+                        📁 <a href="{{ route('files.index',['path'=>$newPath]) }}">{{ $name }}</a>
                         </td>
-
                         <td>-</td>
                         <td>{{ $date }}</td>
-                        <td></td>
+                        <td>
+                            @if(auth()->user()->isAdmin())
+                            <form method="post"
+                                action="{{ route('files.deleteFolder') }}"
+                                style="display:inline">
+                                @csrf
+                                @method('DELETE')
+                                <input type="hidden" name="path" value="{{ $newPath }}">
+                                <button type="button" onclick="confirmDeleteFolder('{{ $newPath }}'); return false;"
+                                    style="background:none;border:none;padding:0;cursor:pointer;font-size:18px;line-height:1;color:#000"
+                                    title="Excluir pasta">
+                                    🗑
+                                </button>
+                            </form>
+                            @endif
+                        </td>                      
                     @else
                         @php
 
@@ -168,21 +171,15 @@
                             </button>
 
                             <form method="post" action="{{ route('files.delete') }}" style="display:inline">
-
                                 @csrf
                                 @method('DELETE')
-
                                 <input type="hidden" name="path" value="{{ $path }}">
                                 <input type="hidden" name="file" value="{{ $name }}">
-
                                 <button type="submit"
                                     style="background:none;border:none;padding:0;cursor:pointer;font-size:18px;line-height:1;color:#000"
                                     onclick="return confirm('Excluir arquivo?')" title="Excluir">
-
                                     🗑
-
-                                </button>
-
+                               </button>
                             </form>
 
                         </td>
@@ -201,11 +198,13 @@
     </div>
     </div>
 
+    @include('js.confirmDeleteFolder')
     @include('js.copyLink')
     @include('js.dragdrop')
     @include('js.invalidateCDN')
+    @include('js.showToast')
     @include('js.upload')
 
 </body>
 
-</html>
+@endsection

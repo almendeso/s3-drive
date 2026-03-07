@@ -27,8 +27,19 @@
     </div>
 
     <div class="header-right">
-        <form method="get" class="search-box">
-            <input type="hidden" name="path" value="{{ $path }}">
+
+        <span class="user-name">
+            👤 {{ auth()->user()->name ?? 'User' }}
+        </span>
+
+        <form method="POST" action="{{ route('logout') }}" style="display:inline">
+            @csrf
+            <button type="submit"
+                style="background:none;border:none;cursor:pointer;font-size:14px"
+                title="Logout">
+                🚪 Logout
+            </button>
         </form>
+
     </div>
 </header>

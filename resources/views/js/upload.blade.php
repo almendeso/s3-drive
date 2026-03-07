@@ -13,6 +13,13 @@ document.getElementById("uploadForm").addEventListener("submit", function(e){
     const bar = document.getElementById("progressBar");
 
     progress.style.display = "block";
+    bar.style.width = "0%";
+
+    xhr.upload.addEventListener("loadstart", function(){
+
+        showToast("Uploading...", 0);
+
+    });
 
     xhr.upload.addEventListener("progress", function(e){
 
@@ -33,7 +40,9 @@ document.getElementById("uploadForm").addEventListener("submit", function(e){
 
             showToast("Upload concluído");
 
-            setTimeout(()=>location.reload(),500);
+            setTimeout(function(){
+                location.reload();
+            }, 800);
 
         }else{
 

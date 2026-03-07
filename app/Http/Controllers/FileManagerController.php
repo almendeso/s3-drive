@@ -166,4 +166,36 @@ class FileManagerController extends Controller
 
         return redirect()->route('files.index',['path'=>$path]);
     }        
+
+    public function deleteFolder(Request $request)
+    {
+        if (!auth()->user()->isAdmin()) {
+            abort(403);
+        }
+
+        $path = trim($request->input('path'),'/');
+
+        if(!$path){
+            return back();
+        }
+
+        Storage::disk($this->disk)->deleteDirectory($path);
+
+        return redirect()->route('files.index', [
+            'path' => dirname($path) === '.' ? '' : dirname($path)
+        ]);
+    }    
+
+    public function folderInfo(Request $request)
+    {
+        $path = trim($request->input('path'),'/');
+
+        $files = Storage::disk($this->disk)->files($path);
+        $dirs  = Storage::disk($this->disk)->directories($path);
+
+        return response()->json([
+            'files' => count($files),
+            'dirs'  => count($dirs)
+        ]);
+    }
 }

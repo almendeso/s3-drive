@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\FileManagerController;
 
 /*
@@ -14,24 +15,38 @@ use App\Http\Controllers\FileManagerController;
 |
 */
 
+// Login Routes
+Route::get('/login', [LoginController::class, 'show'])->name('login');
+Route::post('/login', [LoginController::class, 'login']);
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-Route::get('/', [FileManagerController::class, 'index'])
-    ->name('files.index');
+Route::middleware(['auth'])->group(function () {
 
-Route::post('/upload', [FileManagerController::class, 'upload'])
-    ->name('files.upload');
+    Route::get('/', [FileManagerController::class, 'index'])
+        ->name('files.index');
 
-Route::post('/folder', [FileManagerController::class, 'createFolder'])
-    ->name('files.folder');
+    Route::post('/upload', [FileManagerController::class, 'upload'])
+        ->name('files.upload');
 
-Route::delete('/delete', [FileManagerController::class, 'delete'])
-    ->name('files.delete');
+    Route::post('/folder', [FileManagerController::class, 'createFolder'])
+        ->name('files.folder');
 
-Route::post('/files/invalidate', [FileManagerController::class, 'invalidate'])
-    ->name('files.invalidate');
+    Route::delete('/delete', [FileManagerController::class, 'delete'])
+        ->name('files.delete');
 
-Route::post('/files/invalidate-folder', [FileManagerController::class, 'invalidateFolder'])
-    ->name('files.invalidateFolder');
+    Route::delete('/folder', [FileManagerController::class, 'deleteFolder'])
+        ->name('files.deleteFolder');
 
-Route::get('/files/local', [FileManagerController::class, 'local'])
-    ->name('files.local');
+    Route::post('/folder/info', [FileManagerController::class, 'folderInfo'])
+        ->name('files.folderInfo');        
+
+    Route::post('/files/invalidate', [FileManagerController::class, 'invalidate'])
+        ->name('files.invalidate');
+
+    Route::post('/files/invalidate-folder', [FileManagerController::class, 'invalidateFolder'])
+        ->name('files.invalidateFolder');
+
+    Route::get('/files/local', [FileManagerController::class, 'local'])
+        ->name('files.local');
+});
+

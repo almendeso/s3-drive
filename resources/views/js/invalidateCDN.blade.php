@@ -1,22 +1,5 @@
 <script>
 
-function showToast(message){
-
-    const toast = document.getElementById("toast");
-
-    if(!toast) return;
-
-    toast.innerText = message;
-    toast.style.display = "block";
-    toast.style.opacity = "1";
-
-    setTimeout(()=>{
-        toast.style.opacity = "0";
-        setTimeout(()=>toast.style.display="none",300);
-    },2500);
-
-}
-
 function invalidateCDN(path,file,btn){
 
     if(!confirm("Invalidar cache CDN deste arquivo?"))
