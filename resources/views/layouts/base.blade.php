@@ -6,6 +6,7 @@
     <meta charset="utf-8">
     <title>{{ config('app.name', 'Laravel') }}</title>
     <meta name="author" content="Alvaro Mendes">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     @include('css.app')
     @include('css.dragdrop')

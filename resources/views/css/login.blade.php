@@ -1,70 +1,99 @@
-<style>
 
-body#login{
-    background:#f4f6fb;
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:#f4f6f9;
     height:100vh;
     display:flex;
     align-items:center;
     justify-content:center;
-    font-family:system-ui,-apple-system,BlinkMacSystemFont;
 }
 
-.login-card{
-    width:360px;
+.login-container{
+    width:100%;
+    max-width:420px;
     background:white;
-    padding:35px;
+    padding:40px;
     border-radius:10px;
-    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+    box-shadow:0 10px 25px rgba(0,0,0,0.1);
 }
 
 .login-title{
     text-align:center;
-    font-size:20px;
-    font-weight:600;
-    margin-bottom:25px;
+    margin-bottom:30px;
+    font-size:22px;
+    font-weight:bold;
 }
 
-.login-title span{
-    color:#6b7280;
-    font-size:14px;
+.input-group{
+    margin-bottom:18px;
+}
+
+.input-group label{
     display:block;
+    font-size:14px;
+    margin-bottom:6px;
 }
 
-.form-control{
+.input-group input{
     width:100%;
     padding:10px;
+    border:1px solid #ccc;
     border-radius:6px;
-    border:1px solid #d1d5db;
-    margin-top:5px;
+    font-size:14px;
 }
 
-.form-group{
-    margin-bottom:18px;
+.input-group input:focus{
+    outline:none;
+    border-color:#3b82f6;
 }
 
 .login-btn{
     width:100%;
-    padding:10px;
+    padding:12px;
+    background:#3b82f6;
+    color:white;
     border:none;
     border-radius:6px;
-    background:#2563eb;
-    color:white;
-    font-weight:500;
+    font-size:15px;
     cursor:pointer;
 }
 
 .login-btn:hover{
-    background:#1d4ed8;
+    background:#2563eb;
 }
 
-.remember{
+.error{
+    background:#ffe5e5;
+    color:#b00020;
+    padding:10px;
+    border-radius:6px;
+    margin-bottom:15px;
     font-size:14px;
 }
 
-.logo{
+.footer{
+    margin-top:20px;
     text-align:center;
-    font-size:28px;
-    margin-bottom:10px;
+    font-size:12px;
+    color:#666;
+}
+
+/* mobile */
+
+@media (max-width:500px){
+
+.login-container{
+    margin:20px;
+    padding:30px;
+}
+
 }
 
 </style>
